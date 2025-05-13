@@ -10,6 +10,10 @@ app = Flask(__name__)
 # Load API key securely
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+@app.route("/")
+def home():
+    return "✅ GPT Chatbot server is running! Use POST /chat to interact."
+
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "")
