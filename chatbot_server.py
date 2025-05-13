@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 import openai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load variables from .env
 
 app = Flask(__name__)
 
-# Paste your real OpenAI API key here
-openai.api_key = "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"
+# Load API key securely
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -25,5 +29,4 @@ def chat():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-#if __name__ == "__main__":
-  #  app.run(debug=True)
+# Do NOT run app.run() for Render; Gunicorn handles that.
