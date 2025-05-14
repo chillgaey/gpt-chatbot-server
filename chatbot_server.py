@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
@@ -7,8 +7,8 @@ load_dotenv()  # Load variables from .env
 
 app = Flask(__name__)
 
-# Load API key securely
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize OpenAI client securely
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/")
 def home():
@@ -21,16 +21,14 @@ def chat():
         return jsonify({"error": "No message provided."}), 400
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for SharePoint users."},
                 {"role": "user", "content": user_input}
             ]
         )
-        reply = response.choices[0].message["content"]
+        reply = response.choices[0].message.content
         return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# Do NOT run app.run() for Render; Gunicorn handles that.
