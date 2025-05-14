@@ -1,18 +1,14 @@
 from flask import Flask, request, jsonify
-from openai import OpenAI
+from flask_cors import CORS  # ✅ add this
+import openai
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Load variables from .env
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
-
-# Initialize OpenAI client securely
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-@app.route("/")
-def home():
-    return "✅ GPT Chatbot server is running! Use POST /chat to interact."
+CORS(app)  # ✅ allow cross-origin requests
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -21,14 +17,21 @@ def chat():
         return jsonify({"error": "No message provided."}), 400
 
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for SharePoint users."},
                 {"role": "user", "content": user_input}
             ]
         )
-        reply = response.choices[0].message.content
+        reply = response.choices[0].message["content"]
         return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Chatbot is Live!"
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
