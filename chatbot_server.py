@@ -19,7 +19,7 @@ def chat():
     try:
         #reply = f"(Test reply) You said: {user_input}"
 
-        /response = openai.ChatCompletion.create(#
+        response = openai.ChatCompletion.create(#
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for SharePoint users."},
