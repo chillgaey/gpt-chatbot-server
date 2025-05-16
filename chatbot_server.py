@@ -17,16 +17,16 @@ def chat():
         return jsonify({"error": "No message provided."}), 400
 
     try:
-        reply = f"(Test reply) You said: {user_input}"
+        #reply = f"(Test reply) You said: {user_input}"
 
-        #/response = openai.ChatCompletion.create(
-            #model="gpt-3.5-turbo",
-            #messages=[
-           #     {"role": "system", "content": "You are a helpful assistant for SharePoint users."},
-          #      {"role": "user", "content": user_input}
-         #   ]
-        #)
-        #reply = response.choices[0].message["content"]
+        /response = openai.ChatCompletion.create(#
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant for SharePoint users."},
+                {"role": "user", "content": user_input}
+            ]
+        )
+        reply = response.choices[0].message["content"]#
         return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
